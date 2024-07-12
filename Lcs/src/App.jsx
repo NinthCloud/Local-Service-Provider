@@ -1,15 +1,16 @@
 
 import './App.css'
-import tourcard from './components/tourcard';
-import tourcard from './components/tourcard';
+
+// import tourcard from './components/Tourcard';
+import Tourcard from './components/Tourcard'
 function App() {
-  const [count, setCount] = useState(0)
+  
 
   return (
     <>
-      <div>
-        <tourcard/>
-      </div>
+      
+        <Tourcard/>
+      
       
     </>
   )
