@@ -1,7 +1,6 @@
 
 import './App.css'
 
-// import tourcard from './components/Tourcard';
 import Tourcard from './components/Tourcard'
 function App() {
   
