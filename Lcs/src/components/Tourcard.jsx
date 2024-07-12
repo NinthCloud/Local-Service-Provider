@@ -1,5 +1,9 @@
-const tourcard = () =>{
-    return <div>Hello</div>;
-};
+import React from 'react'
 
-export default tourcard;
+const tourcard = () => {
+  return (
+    <div>tourcard</div>
+  )
+}
+
+export default tourcard
