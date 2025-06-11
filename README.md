@@ -51,7 +51,7 @@ A modern, full-stack web application to connect users with local service provide
 ├── README.md
 
 
-git clone https://github.com/yourname/local-service-provider.git
+git clone https://github.com/NinthCloud/Local-Service-Provider.git
 cd local-service-provider
 
 cd server
