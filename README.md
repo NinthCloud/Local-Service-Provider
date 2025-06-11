@@ -129,4 +129,4 @@ Backend: Express.js
 
 DB: PostgreSQL
 
-Tools: Postman, PgAdmin, React DevTools
+Tools: Postman, React DevTools
