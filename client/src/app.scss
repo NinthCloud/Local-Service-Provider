@@ -1,0 +1,22 @@
+/* Apply Montserrat globally */
+* {
+    font-family: "Montserrat", sans-serif !important;
+
+    html, body {
+      overflow-x: hidden;
+    }
+    
+    /* Fix card alignment */
+    .slick-list {
+      padding: 0 !important; /* Adjusts extra spacing */
+    }
+    
+    /* Optional: Hide arrows if necessary */
+    .slick-prev, .slick-next {
+      display: none !important;
+    }
+  }
+
+  /* Hide vertical scrollbar */
+
+  
