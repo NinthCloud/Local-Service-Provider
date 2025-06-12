@@ -25,6 +25,7 @@ A modern, full-stack web application to connect users with local service provide
 - 🌍 **Responsive Material UI Interface**
 - 🔧 **RESTful APIs with Express.js**
 - 🗃️ **Structured Relational DB (PostgreSQL)**
+- 💰 **Integrated payment system using stripe**
 
 ---
 
@@ -70,6 +71,7 @@ DB_NAME=your_db_name
 DB_USER=your_user
 DB_PASS=your_password
 DB_HOST=localhost
+STRIPE= your_secret_key
 
 
 🧪 Testing
@@ -95,14 +97,12 @@ Admin Moderation
 PDF generation for bookings
 
 🚧 Limitations
-❌ No integrated payment system yet
 
 ❌ No real-time chat (future feature)
 
-❌ Basic Admin analytics (can be enhanced)
+❌ Moderate Admin analytics (can be enhanced)
 
 🔮 Future Enhancements
-💳 Payment Gateway Integration
 
 📲 Mobile App Version
 
