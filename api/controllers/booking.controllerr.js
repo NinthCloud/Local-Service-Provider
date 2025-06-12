@@ -1,6 +1,81 @@
 import createError from "../utils/createError.js";
 import { Op } from "sequelize";
 import { User, Provider, Service, Booking, Review } from "../models/index.js";
+import Stripe from "stripe";
+
+
+
+export const intent = async (req, res, next) => {
+  try {
+    const stripe = new Stripe(process.env.STRIPE);
+    
+    // Find the booking by ID
+    const booking = await Booking.findByPk(req.params.bookingId, {
+      include: [
+        {
+          model: Service,
+          as: 'service',
+          attributes: ['title', 'cover']
+        }
+      ]
+    });
+    
+    if (!booking) {
+      return next(createError(404, "Booking not found"));
+    }
+    
+    // Verify that the user is authorized to make payment for this booking
+    if (booking.buyerId !== req.userId) {
+      return next(createError(403, "Not authorized to make payment for this booking"));
+    }
+    
+    // Check if booking is in a payable state
+    if (booking.status !== 'Confirmed') {
+      return next(createError(400, "Booking must be confirmed before payment"));
+    }
+    
+    // Check if payment has already been made
+    if (booking.payment_intent) {
+      return next(createError(400, "Payment intent already exists for this booking"));
+    }
+    
+    // Create payment intent with booking details
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(booking.price * 100), // Convert to cents and ensure integer
+      currency: "usd",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+      metadata: {
+        bookingId: booking.id.toString(),
+        serviceId: booking.serviceId.toString(),
+        buyerId: booking.buyerId.toString(),
+        providerId: booking.providerId.toString(),
+        serviceTitle: booking.title,
+        preferredDate: booking.preferredDate || '',
+        preferredTime: booking.preferredTime || ''
+      },
+      description: `Payment for booking: ${booking.title} on ${booking.preferredDate} at ${booking.preferredTime}`
+    });
+    
+    // Store the payment intent ID in the booking
+    await booking.update({ 
+      payment_intent: paymentIntent.id,
+      // isCompleted: true, 
+    });
+    
+    res.status(200).json({
+      clientSecret: paymentIntent.client_secret,
+      bookingId: booking.id,
+      amount: booking.price,
+      serviceTitle: booking.title
+    });
+    
+  } catch (err) {
+    console.error("Error creating payment intent:", err);
+    next(err);
+  }
+};
 
 /**
  * Create a new booking for a service
@@ -52,57 +127,6 @@ export const createOrder = async (req, res, next) => {
     next(err);
   }
 };
-
-/**
- * Get bookings for the logged-in user
- * - If the user is a provider, fetch bookings where they are the provider
- * - If the user is a buyer, fetch bookings where they are the buyer
- */
-// export const getOrders = async (req, res) => {
-//   try {
-//     const page = parseInt(req.query.page) || 1; // Default to page 1
-//     const limit = parseInt(req.query.limit) || 10; // Default to 10 bookings per page
-//     const offset = (page - 1) * limit;
-
-//     // Check if the user is a provider
-//     const provider = await Provider.findOne({ where: { userId: req.userId } });
-    
-//     let filter = {};
-    
-//     if (provider) {
-//       // If user is a provider, get bookings by providerId
-//       filter = {
-//         where: {
-//           [Op.or]: [
-//             { buyerId: req.userId }, 
-//             { providerId: provider.id }
-//           ]
-//         },
-//         offset,
-//         limit,
-//       };
-//     } else {
-//       // If user is only a buyer, get bookings by buyerId
-//       filter = {
-//         where: { buyerId: req.userId },
-//         offset,
-//         limit,
-//       };
-//     }
-
-//     // Get paginated bookings
-//     const { count, rows } = await Booking.findAndCountAll(filter);
-
-//     res.status(200).json({
-//       bookings: rows,
-//       totalPages: Math.ceil(count / limit),
-//       currentPage: page,
-//     });
-//   } catch (err) {
-//     console.error("Error fetching bookings:", err.message);
-//     res.status(500).send("Internal server error");
-//   }
-// };
 
 export const getOrders = async (req, res) => {
   try {
@@ -175,13 +199,154 @@ export const confirmOrder = async (req, res, next) => {
     await booking.update({ status: "Confirmed" });
 
     // Increment sales in the service
-    await service.increment("sales");
+    // await service.increment("sales");
 
     res.status(200).json(booking);
   } catch (err) {
     next(err);
   }
 };
+
+export const confirmBooking = async (req, res, next) => {
+  try {
+    const { payment_intent } = req.body;
+    
+    console.log("=== BOOKING CONFIRMATION START ===");
+    console.log("Payment Intent from request:", payment_intent);
+    console.log("User ID from token:", req.userId);
+    
+    if (!payment_intent) {
+      return next(createError(400, "Payment intent is required"));
+    }
+
+    // STRATEGY 1: Direct payment intent match
+    let booking = await Booking.findOne({
+      where: { 
+        payment_intent: payment_intent,
+        buyerId: req.userId
+      }
+    });
+    
+    console.log("Direct match found:", booking ? "YES" : "NO");
+    
+    // STRATEGY 2: If no direct match, use Stripe API to get payment intent metadata
+    if (!booking) {
+      console.log("No direct match, checking Stripe metadata...");
+      
+      try {
+        const stripePaymentIntent = await stripe.paymentIntents.retrieve(payment_intent);
+        console.log("Stripe Payment Intent metadata:", stripePaymentIntent.metadata);
+        
+        if (stripePaymentIntent.metadata.bookingId) {
+          console.log("Found booking ID in metadata:", stripePaymentIntent.metadata.bookingId);
+          
+          // Find booking by ID from metadata
+          booking = await Booking.findOne({
+            where: {
+              id: stripePaymentIntent.metadata.bookingId,
+              buyerId: req.userId
+            }
+          });
+          
+          console.log("Booking found via metadata:", booking ? "YES" : "NO");
+          
+          // Update the booking with the correct payment intent
+          if (booking) {
+            console.log("Updating booking with correct payment intent...");
+            console.log("Old payment intent:", booking.payment_intent);
+            console.log("New payment intent:", payment_intent);
+            
+            await booking.update({
+              payment_intent: payment_intent
+            });
+            
+            console.log("Payment intent updated successfully");
+          }
+        }
+      } catch (stripeError) {
+        console.error("Error retrieving from Stripe:", stripeError);
+      }
+    }
+    
+    // STRATEGY 3: Find by user's most recent incomplete booking
+    if (!booking) {
+      console.log("Still no match, trying latest incomplete booking...");
+      
+      booking = await Booking.findOne({
+        where: {
+          buyerId: req.userId,
+          isCompleted: false
+        },
+        order: [['createdAt', 'DESC']]
+      });
+      
+      console.log("Latest incomplete booking found:", booking ? "YES" : "NO");
+      
+      if (booking) {
+        console.log("Updating latest incomplete booking with payment intent...");
+        await booking.update({
+          payment_intent: payment_intent
+        });
+      }
+    }
+    
+    // FINAL CHECK: Do we have a booking?
+    if (!booking) {
+      console.log("=== NO BOOKING FOUND - DEBUG INFO ===");
+      
+      // Show all user's bookings for debugging
+      const allUserBookings = await Booking.findAll({
+        where: { buyerId: req.userId },
+        attributes: ['id', 'payment_intent', 'isCompleted', 'createdAt'],
+        order: [['createdAt', 'DESC']],
+        limit: 5
+      });
+      
+      console.log("User's recent bookings:");
+      allUserBookings.forEach(b => {
+        console.log(`  ID: ${b.id}, PI: ${b.payment_intent}, Completed: ${b.isCompleted}`);
+      });
+      
+      return next(createError(404, "No matching booking found. Please contact support."));
+    }
+    
+    // Check if already completed
+    if (booking.isCompleted) {
+      console.log("Booking already completed");
+      return res.status(200).send("Booking was already confirmed.");
+    }
+    
+    // CONFIRM THE BOOKING
+    console.log("Confirming booking ID:", booking.id);
+    
+    await booking.update({
+      isCompleted: true,
+      status: 'Confirmed',
+      payment_intent: payment_intent // Ensure it's set to the correct one
+    });
+    
+    // Update service sales
+    if (booking.serviceId) {
+      try {
+        await Service.increment('sales', {
+          where: { id: booking.serviceId }
+        });
+        console.log("Service sales incremented");
+      } catch (serviceError) {
+        console.log("Non-critical error updating service sales:", serviceError.message);
+      }
+    }
+    
+    console.log("=== BOOKING CONFIRMATION SUCCESS ===");
+    res.status(200).send("Booking confirmed successfully.");
+    
+  } catch (err) {
+    console.error("=== BOOKING CONFIRMATION ERROR ===");
+    console.error(err);
+    next(err);
+  }
+};
+
 
 /**
  * Cancel a booking

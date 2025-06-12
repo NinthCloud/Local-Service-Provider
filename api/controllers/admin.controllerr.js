@@ -75,30 +75,6 @@ export const getProviders = async (req, res, next) => {
   }
 };
 
-// Approve provider application
-// export const approveProvider = async (req, res, next) => {
-//   try {
-//     const { userId } = req.params;
-
-//     const user = await User.findByPk(userId);
-//     if (!user) return next(createError(404, "User not found"));
-
-//     if (!user.appliedForProvider)
-//       return next(
-//         createError(400, "User has not applied to become a provider")
-//       );
-
-//     await user.update({
-//       approvedByAdmin: true,
-//       isSeller: true,
-//     });
-
-//     res.status(200).json({ message: "Provider approved successfully" });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
 export const approveProvider = async (req, res, next) => {
   try {
     const { userId } = req.params;

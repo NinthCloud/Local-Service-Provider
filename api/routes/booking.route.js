@@ -1,9 +1,12 @@
 import express from "express";
 import { verifyToken } from "../middleware/jwtt.js";
-import { getOrders, createOrder, cancelOrder, confirmOrder, getOrder, checkReviewableStatus } from "../controllers/booking.controllerr.js";
+import { getOrders, createOrder, cancelOrder, confirmOrder, getOrder, checkReviewableStatus, intent, confirmBooking, } from "../controllers/booking.controllerr.js";
 
 
 const router = express.Router();
+
+router.post("/create-payment-intent/:bookingId", verifyToken, intent);
+router.put("/confirm", verifyToken, confirmBooking);
 
 // Create a new order
 router.post("/:serviceId", verifyToken, (req, res, next) => {

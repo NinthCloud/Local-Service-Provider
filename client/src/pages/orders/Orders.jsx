@@ -48,6 +48,10 @@ import {
   VisibilityOutlined as ViewIcon,
   RateReviewOutlined as FeedbackIcon,
   FilterAltOutlined as FilterIcon,
+  Payment,
+  Money,
+  DoneAllSharp,
+  MonetizationOn,
 } from "@mui/icons-material";
 
 const Orders = () => {
@@ -321,7 +325,7 @@ const Orders = () => {
                   </Button>
                   {booking.status === "Confirmed" &&
                     !isExpired(booking) &&
-                    currentUser.id === booking.buyerId && (
+                    currentUser.id === booking.buyerId && booking.isCompleted &&(
                       <Button
                         variant="outlined"
                         color="secondary"
@@ -332,6 +336,21 @@ const Orders = () => {
                         sx={{ borderRadius: 2 }}
                       >
                         Review
+                      </Button>
+                    )}
+                    {booking.status === "Confirmed" &&
+                    !isExpired(booking) &&
+                    currentUser.id === booking.buyerId && !booking.isCompleted &&(
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        size="small"
+                        startIcon={<MonetizationOn />}
+                        component={Link}
+                        to={`/pay/${booking.id}`}
+                        sx={{ borderRadius: 2 }}
+                      >
+                        Pay now
                       </Button>
                     )}
                 </Box>
@@ -501,7 +520,7 @@ const Orders = () => {
 
                     {booking.status === "Confirmed" &&
                       !isExpired(booking) &&
-                      currentUser.id === booking.buyerId && (
+                      currentUser.id === booking.buyerId && booking.isCompleted && (
                         <Tooltip title="Write Feedback">
                           <IconButton
                             color="secondary"
@@ -519,6 +538,29 @@ const Orders = () => {
                             }}
                           >
                             <FeedbackIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      {booking.status === "Confirmed" &&
+                      !isExpired(booking) &&
+                      currentUser.id === booking.buyerId && !booking.isCompleted && (
+                        <Tooltip title="Make payment now">
+                          <IconButton
+                            color="secondary"
+                            size="small"
+                            component={Link}
+                            to={`/pay/${booking.id}`}
+                            sx={{
+                              bgcolor: alpha(theme.palette.secondary.main, 0.1),
+                              "&:hover": {
+                                bgcolor: alpha(
+                                  theme.palette.secondary.main,
+                                  0.2
+                                ),
+                              },
+                            }}
+                          >
+                            <MonetizationOn fontSize="small" />
                           </IconButton>
                         </Tooltip>
                       )}

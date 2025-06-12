@@ -5,18 +5,13 @@ import {
   CssBaseline, 
   Typography, 
   IconButton, 
-  Avatar, 
   useMediaQuery,
-  Drawer,
   AppBar,
   Toolbar as MuiToolbar
 } from "@mui/material";
 import Sidebar from "./Sidebar";
 import AdminTheme from "./AdminTheme";
 import { ThemeProvider } from "@mui/material/styles";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import SearchIcon from "@mui/icons-material/Search";
-import SettingsIcon from "@mui/icons-material/Settings";
 import MenuIcon from "@mui/icons-material/Menu";
 import getCurrentUser from "../utils/getCurrentUser";
 

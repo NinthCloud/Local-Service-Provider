@@ -52,18 +52,18 @@ export default (sequelize) => {
       allowNull: false
     },
     status: {
-      type: DataTypes.ENUM('Pending', 'Confirmed', 'Canceled', 'Expired'),
+      type: DataTypes.ENUM('Pending', 'Confirmed', 'Canceled', 'Expired', 'Unresolved'),
       defaultValue: 'Pending'
-    }
+    },
     // For future updates
-    // payment_intent: {
-    //   type: DataTypes.STRING,
-    //   allowNull: true
-    // },
-    // isCompleted: {
-    //   type: DataTypes.BOOLEAN,
-    //   defaultValue: false
-    // }
+    payment_intent: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    isCompleted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    }
   }, {
     timestamps: true
   });

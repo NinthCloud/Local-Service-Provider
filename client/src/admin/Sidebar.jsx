@@ -30,7 +30,10 @@ import {
   PeopleOutline, 
   FeaturedPlayList,
   KeyboardArrowDown,
-  Category
+  Category,
+  Payment,
+  ProductionQuantityLimitsOutlined,
+  DashboardRounded
 } from "@mui/icons-material";
 import { Link, useLocation } from "react-router-dom";
 
@@ -48,8 +51,14 @@ const Sidebar = ({ open, setOpen, isMobile = false, onClose = () => {} }) => {
       active: location.pathname === "/"
     },
     { 
+      text: "Dashboard", 
+      icon: <DashboardRounded />, 
+      path: "/admin/dashboard",
+      active: location.pathname === "/admin/dashboard"
+    },
+    { 
       text: "Applications", 
-      icon: <BarChart />, 
+      icon: <Payment />, 
       path: "/admin/applications",
       active: location.pathname === "/admin/applications",
      
@@ -74,7 +83,7 @@ const Sidebar = ({ open, setOpen, isMobile = false, onClose = () => {} }) => {
     },
     { 
       text: "Services", 
-      icon: <FeaturedPlayList />, 
+      icon: <ProductionQuantityLimitsOutlined />, 
       path: "/admin",
       active: location.pathname === "/admin"
     },

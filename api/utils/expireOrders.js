@@ -10,7 +10,7 @@ const expirePastOrders = async () => {
     const bookingsToCheck = await Booking.findAll({
       where: {
         status: {
-          [Op.in]: ['Pending', 'Confirmed']
+          [Op.in]: ['Pending']
         },
         preferredDate: {
           [Op.not]: null

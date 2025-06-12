@@ -26,7 +26,9 @@ import Profile from "./pages/profile/Profile";
 import Wishlist from "./pages/wishlist/Wishlist";
 import EditProfile from "./pages/viewProfile/EditProfile";
 import ChangePassword from "./pages/changePassword/ChangePassword";
-import PasswordReset from "./pages/passwordreset/PasswordReset"
+import PasswordReset from "./pages/passwordreset/PasswordReset";
+import Pay from "./pages/pay/Pay";
+import Success from "./pages/success/Success";
 import "./app.scss";
 
 import AdminDashboard from "./admin/AdminDashboard";
@@ -37,11 +39,12 @@ import Bookings from "./admin/pages/Bookings";
 import Applications from "./admin/pages/Reports";
 import Reviews from "./admin/pages/Reviews";
 import Settings from "./admin/pages/Settings";
-import ProviderDetails from "./admin/pages/ProviderDetails"
+import ProviderDetails from "./admin/pages/ProviderDetails";
 import ServiceDetails from "./admin/pages/ServiceDetails";
 import BookingDetails from "./admin/pages/BookingDetails";
 import HandleCat from "./admin/pages/HandleCat";
 import AllCat from "./pages/gigs/AllCat";
+import Dashboard from "./admin/pages/Dasboard";
 
 // Custom Theme with Montserrat Font
 const theme = createTheme({
@@ -97,9 +100,17 @@ const router = createBrowserRouter([
       { path: "/editGig/:id", element: <EditGig /> },
       { path: "/wishlist", element: <Wishlist /> },
       { path: "/profile", element: <Profile /> },
-      { path: "/editprofile", element: <EditProfile />},
-      { path: "/changepassword", element: <ChangePassword />},
-      { path: "/passwordreset", element: <PasswordReset />}
+      { path: "/editprofile", element: <EditProfile /> },
+      { path: "/changepassword", element: <ChangePassword /> },
+      { path: "/passwordreset", element: <PasswordReset /> },
+      {
+        path: "/pay/:bookingId",
+        element: <Pay />,
+      },
+      {
+        path: "/success",
+        element: <Success />,
+      },
     ],
   },
 
@@ -114,14 +125,14 @@ const router = createBrowserRouter([
       { path: "applications", element: <Applications /> },
       { path: "reviews", element: <Reviews /> },
       { path: "settings", element: <Settings /> },
-      { path: "providerdetails/:userId", element: <ProviderDetails/>},
-      { path: "servicedetails/:id", element: <ServiceDetails/>},
-      { path: "orderdetails/:bookingId", element: <BookingDetails/>},
-      { path: "handlecategory", element: <HandleCat/>},
+      { path: "providerdetails/:userId", element: <ProviderDetails /> },
+      { path: "servicedetails/:id", element: <ServiceDetails /> },
+      { path: "orderdetails/:bookingId", element: <BookingDetails /> },
+      { path: "handlecategory", element: <HandleCat /> },
+      { path: "dashboard", element: <Dashboard /> },
     ],
   },
 ]);
-
 
 const App = () => {
   return <RouterProvider router={router} />;
