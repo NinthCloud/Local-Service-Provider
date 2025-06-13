@@ -51,6 +51,15 @@ A modern, full-stack web application to connect users with local service provide
 ├── public/               # Static assets
 ├── README.md
 
+## 🛠️ One-Step Local Setup
+
+Run this in your terminal:
+
+```bash
+chmod +x setup.sh
+./setup.sh
+
+or follow the bellow instructions
 
 git clone https://github.com/NinthCloud/Local-Service-Provider.git
 cd local-service-provider
