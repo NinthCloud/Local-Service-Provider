@@ -35,7 +35,7 @@ A modern, full-stack web application to connect users with local service provide
 |-------------|------------------------------|
 | Frontend    | React.js + Material UI       |
 | Backend     | Node.js + Express.js         |
-| Database    | MYSQL                   |
+| Database    | PostgreSQL                   |
 | Auth        | JWT, bcrypt                  |
 | Styling     | Material UI            |
 | Tools       | Postman, VS Code, MYSQL workbench    |
