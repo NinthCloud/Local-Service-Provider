@@ -136,7 +136,9 @@ cron.schedule("*/5 * * * *", async () => {
   await removeExpiredSlots();
 });
 
-app.listen(5000, () => {
+// Server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
   testConnection();
-  console.log("🚀 Server is running on port 5000");
+  console.log(`🚀 Server is running on port ${PORT}`);
 });
