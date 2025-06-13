@@ -30,7 +30,7 @@ import {
 } from "@mui/icons-material";
 
 const stripePromise = loadStripe(
-  "your_public_key"
+  "pk_test_51RZ4b2GgbP9bkLoKRysU1zk4J9OrZa7gm623c2i6Jg8sADTA5eP6vEFH2U9MOohj9W8C77wg8G1dWFwi4G6ufsDS0056CJRX8x"
 );
 
 const Pay = () => {
