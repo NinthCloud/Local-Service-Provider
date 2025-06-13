@@ -59,6 +59,12 @@ Run this in your terminal:
 chmod +x setup.sh
 ./setup.sh
 
+## 🛠️ Quick Setup Guide
+
+### 💻 For Windows Users:
+```bash
+Double-click setup.bat or run it in Command Prompt
+
 or follow the bellow instructions
 
 git clone https://github.com/NinthCloud/Local-Service-Provider.git
