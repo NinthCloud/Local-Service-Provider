@@ -137,7 +137,7 @@ const Orders = () => {
 
     return (
       orderDateTime <= now &&
-      (booking.status === "Pending" || booking.status === "Confirmed")
+      (booking.status === "Pending")
     );
   };
 
@@ -298,7 +298,8 @@ const Orders = () => {
                     )}
                   {(booking.status === "Pending" ||
                     booking.status === "Confirmed") &&
-                    !isExpired(booking) && (
+                    !isExpired(booking) && ((!showProviderOrders) || // Always show for buyer
+                    (showProviderOrders && !booking.isCompleted)) &&(
                       <Button
                         variant="outlined"
                         color="error"
@@ -481,7 +482,8 @@ const Orders = () => {
 
                     {(booking.status === "Pending" ||
                       booking.status === "Confirmed") &&
-                      !isExpired(booking) && (
+                      !isExpired(booking) && ((!showProviderOrders) || // Always show for buyer
+                      (showProviderOrders && !booking.isCompleted)) &&(
                         <Tooltip title="Cancel Order">
                           <IconButton
                             color="error"
