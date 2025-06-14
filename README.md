@@ -14,6 +14,22 @@ A modern, full-stack web application to connect users with local service provide
 
 ---
 
+🌐 Live Demo
+Try the fully deployed version here:
+🔗 https://servicehub.up.railway.app
+
+Features available in the live demo:
+
+✅ User registration and login
+
+✅ Admin dashboard for managing users/services
+
+✅ Stripe-integrated payment flow
+
+✅ Booking and service browsing functionality
+
+✅ Mobile-friendly UI
+
 ## 🌟 Key Features
 
 - 🔐 **Secure Login & Registration** (JWT & bcrypt)
