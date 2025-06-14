@@ -30,6 +30,10 @@ Features available in the live demo:
 
 ✅ Mobile-friendly UI
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 495da27 (modify readme and env)
 ## 🌟 Key Features
 
 - 🔐 **Secure Login & Registration** (JWT & bcrypt)
